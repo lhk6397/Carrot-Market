@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
+import Link from "next/link";
 import { cls } from "../libs/utils";
+import { useRouter } from "next/router";
 
 interface LayoutProps {
   title?: string;
@@ -10,44 +10,53 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const Layout = ({ title, canGoBack, hasTabBar, children }: LayoutProps) => {
+export default function Layout({
+  title,
+  canGoBack,
+  hasTabBar,
+  children,
+}: LayoutProps) {
   const router = useRouter();
   const onClick = () => {
     router.back();
   };
   return (
     <div>
-      <div
-        className={cls(
-          !canGoBack ? "justify-center" : "",
-          "bg-white w-full max-w-xl text-lg px-10  font-medium py-3 fixed text-gray-800 border-b top-0 flex items-center"
-        )}
-      >
-        {canGoBack && (
-          <button onClick={onClick}>
+      <div className="bg-white w-full h-12 max-w-xl justify-center text-lg px-10 font-medium  fixed text-gray-800 border-b top-0  flex items-center">
+        {canGoBack ? (
+          <button onClick={onClick} className="absolute left-4">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
               className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
+                strokeWidth="2"
+                d="M15 19l-7-7 7-7"
+              ></path>
             </svg>
           </button>
-        )}
-        {title && <span>{title}</span>}
+        ) : null}
+        {title ? (
+          <span className={cls(canGoBack ? "mx-auto" : "", "")}>{title}</span>
+        ) : null}
       </div>
-      <div className={cls("pt-14", hasTabBar ? "pb-24" : "")}>{children}</div>
-      {hasTabBar && (
+      <div className={cls("pt-12", hasTabBar ? "pb-24" : "")}>{children}</div>
+      {hasTabBar ? (
         <nav className="bg-white max-w-xl text-gray-700 border-t fixed bottom-0 w-full px-10 pb-5 pt-3 flex justify-between text-xs">
           <Link href="/">
-            <a className="flex flex-col items-center space-y-2">
+            <a
+              className={cls(
+                "flex flex-col items-center space-y-2 ",
+                router.pathname === "/"
+                  ? "text-orange-500"
+                  : "hover:text-gray-500 transition-colors"
+              )}
+            >
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -66,7 +75,14 @@ const Layout = ({ title, canGoBack, hasTabBar, children }: LayoutProps) => {
             </a>
           </Link>
           <Link href="/community">
-            <a className="flex flex-col items-center space-y-2">
+            <a
+              className={cls(
+                "flex flex-col items-center space-y-2 ",
+                router.pathname === "/community"
+                  ? "text-orange-500"
+                  : "hover:text-gray-500 transition-colors"
+              )}
+            >
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -81,11 +97,18 @@ const Layout = ({ title, canGoBack, hasTabBar, children }: LayoutProps) => {
                   d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
                 ></path>
               </svg>
-              <span>동내생활</span>
+              <span>동네생활</span>
             </a>
           </Link>
           <Link href="/chats">
-            <a className="flex flex-col items-center space-y-2">
+            <a
+              className={cls(
+                "flex flex-col items-center space-y-2 ",
+                router.pathname === "/chats"
+                  ? "text-orange-500"
+                  : "hover:text-gray-500 transition-colors"
+              )}
+            >
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -104,7 +127,14 @@ const Layout = ({ title, canGoBack, hasTabBar, children }: LayoutProps) => {
             </a>
           </Link>
           <Link href="/live">
-            <a className="flex flex-col items-center space-y-2">
+            <a
+              className={cls(
+                "flex flex-col items-center space-y-2 ",
+                router.pathname === "/live"
+                  ? "text-orange-500"
+                  : "hover:text-gray-500 transition-colors"
+              )}
+            >
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -123,7 +153,14 @@ const Layout = ({ title, canGoBack, hasTabBar, children }: LayoutProps) => {
             </a>
           </Link>
           <Link href="/profile">
-            <a className="flex flex-col items-center space-y-2">
+            <a
+              className={cls(
+                "flex flex-col items-center space-y-2 ",
+                router.pathname === "/profile"
+                  ? "text-orange-500"
+                  : "hover:text-gray-500 transition-colors"
+              )}
+            >
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -142,9 +179,7 @@ const Layout = ({ title, canGoBack, hasTabBar, children }: LayoutProps) => {
             </a>
           </Link>
         </nav>
-      )}
+      ) : null}
     </div>
   );
-};
-
-export default Layout;
+}
