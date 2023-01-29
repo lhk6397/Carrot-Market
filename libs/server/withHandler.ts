@@ -29,6 +29,7 @@ export default function withHandler({
       // api page auth
       return res.status(401).json({ ok: false, error: "Please Login" });
     }
+
     try {
       await handler(req, res);
     } catch (error) {
