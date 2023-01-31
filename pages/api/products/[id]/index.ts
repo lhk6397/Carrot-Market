@@ -25,6 +25,7 @@ async function handler(
       },
     },
   });
+  if (!product) return res.json({ ok: false });
   const terms = product?.name.split(" ").map((word) => ({
     name: {
       contains: word,
