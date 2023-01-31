@@ -1,8 +1,12 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { SWRConfig } from "swr/_internal";
+import useUser from "@libs/client/useUser";
+import { useRouter } from "next/router";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const { pathname } = useRouter();
+  useUser(pathname);
   return (
     <SWRConfig
       value={{
