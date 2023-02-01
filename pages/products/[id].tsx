@@ -8,6 +8,7 @@ import { SkeletonCard } from "@components/SkeletonCard";
 import { Product, User } from "@prisma/client";
 import useMutation from "@libs/client/useMutation";
 import { cls } from "@libs/client/utils";
+import Image from "next/image";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -40,9 +41,26 @@ const ItemDetail: NextPage = () => {
       {data ? (
         <div className="px-4 py-4">
           <div className="mb-8">
-            <div className="h-96 bg-slate-300" />
+            <div className="relative pb-96">
+              <Image
+                src={data?.product.image}
+                className="bg-slate-300 object-cover"
+                layout="fill"
+                alt="productImage"
+              />
+            </div>
             <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
-              <div className="w-12 h-12 rounded-full bg-slate-300" />
+              {data.product.user.avatar ? (
+                <Image
+                  src={data?.product?.user?.avatar}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-full bg-slate-300"
+                  alt="avatar"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-slate-300" />
+              )}
               <div>
                 <p className="text-sm font-medium text-gray-700">
                   {data?.product.user.name}

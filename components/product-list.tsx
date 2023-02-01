@@ -23,6 +23,7 @@ const ProductList = ({ kind }: ProductListProps) => {
       {data[kind]?.map((record) => (
         <Item
           id={record.product.id}
+          image={record.product.image}
           key={record.id}
           title={record.product.name}
           price={record.product.price}
