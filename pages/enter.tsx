@@ -1,12 +1,22 @@
 import axios from "axios";
 import type { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "@components/button";
 import Input from "@components/input";
 import useMutation from "@libs/client/useMutation";
 import { cls } from "@libs/client/utils";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+// import Bs from "@components/Bs";
+const Bs = dynamic(
+  // @ts-ignore
+  () =>
+    new Promise((resolve) =>
+      setTimeout(() => resolve(import("@components/Bs")), 10000)
+    ),
+  { ssr: false, suspense: true }
+);
 
 interface EnterForm {
   email?: string;
@@ -124,14 +134,19 @@ const Enter: NextPage = () => {
                 />
               ) : null}
               {method === "phone" ? (
-                <Input
-                  register={register("phone")}
-                  name="phone"
-                  label="Phone number"
-                  type="number"
-                  kind="phone"
-                  required
-                />
+                <>
+                  <Suspense fallback={<h1>Loading...</h1>}>
+                    <Bs />
+                  </Suspense>
+                  <Input
+                    register={register("phone")}
+                    name="phone"
+                    label="Phone number"
+                    type="number"
+                    kind="phone"
+                    required
+                  />
+                </>
               ) : null}
               {method === "email" ? (
                 <Button text={loading ? "Loading" : "Get login link"} />

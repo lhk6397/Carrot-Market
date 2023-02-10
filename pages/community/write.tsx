@@ -33,7 +33,7 @@ const Write: NextPage = () => {
     }
   }, [data, router]);
   return (
-    <Layout canGoBack title="Write Post">
+    <Layout canGoBack title="Write Post" seoTitle="Question Upload">
       <form className="p-4 space-y-4" onSubmit={handleSubmit(onValid)}>
         <TextArea
           required

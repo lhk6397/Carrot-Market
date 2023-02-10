@@ -1,10 +1,11 @@
-import type { NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
 import FloatingButton from "@components/floating-button";
 import Layout from "@components/layout";
 import useSWR from "swr";
 import { Post, User } from "@prisma/client";
 import useCoords from "@libs/client/useCoords";
+import client from "@libs/server/client";
 
 interface PostWithUser extends Post {
   user: User;
@@ -19,17 +20,18 @@ interface PostsResponse {
   posts: PostWithUser[];
 }
 
-const Community: NextPage = () => {
-  const { latitude, longitude } = useCoords();
-  const { data } = useSWR<PostsResponse>(
-    latitude && longitude // nextJs는 페이지가 처음 실행될 때는 초기 상태값(null)으로 설정됨
-      ? `/api/posts?latitude=${latitude}&longitude=${longitude}`
-      : null
-  );
+const Community: NextPage<PostsResponse> = ({ posts }) => {
+  // const { latitude, longitude } = useCoords();
+  // const { data } = useSWR<PostsResponse>(
+  //   latitude && longitude // nextJs는 페이지가 처음 실행될 때는 초기 상태값(null)으로 설정됨
+  //     ? `/api/posts?latitude=${latitude}&longitude=${longitude}`
+  //     : null
+  // );
+
   return (
-    <Layout hasTabBar title="동네생활">
+    <Layout hasTabBar title="동네생활" seoTitle="Community">
       <div className="space-y-4 divide-y-[2px]">
-        {data?.posts?.map((post) => (
+        {posts?.map((post) => (
           <Link key={post.id} href={`/community/${post.id}`}>
             <a className="flex cursor-pointer flex-col pt-4 items-start">
               <span className="flex ml-4 items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
@@ -59,7 +61,7 @@ const Community: NextPage = () => {
                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                     ></path>
                   </svg>
-                  <span>궁금해요 {post._count.wondering}</span>
+                  <span>궁금해요 {post._count?.wondering || 0}</span>
                 </span>
                 <span className="flex space-x-2 items-center text-sm">
                   <svg
@@ -76,7 +78,7 @@ const Community: NextPage = () => {
                       d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                     ></path>
                   </svg>
-                  <span>답변 {post._count.answers}</span>
+                  <span>답변 {post._count?.answers || 0}</span>
                 </span>
               </div>
             </a>
@@ -101,6 +103,16 @@ const Community: NextPage = () => {
       </div>
     </Layout>
   );
+};
+
+export const getStaticProps = async () => {
+  console.log("BUILDING COMM. STATICALLY");
+  const posts = await client.post.findMany({ include: { user: true } });
+  return {
+    props: {
+      posts: JSON.parse(JSON.stringify(posts)),
+    },
+  };
 };
 
 export default Community;
